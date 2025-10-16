@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">app-bancario-teste</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="image_logo">image_logo</string>
+    <string name="login">Login</string>
+    <string name="payments">Pagamentos</string>
+    <string name="back_button">botao_voltar</string>
+    <string name="bills_paid">Contas pagas</string>
+</resources>
