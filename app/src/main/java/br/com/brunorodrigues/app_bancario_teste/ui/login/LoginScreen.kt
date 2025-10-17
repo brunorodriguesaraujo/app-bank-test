@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import br.com.brunorodrigues.app_bancario_teste.R
 import br.com.brunorodrigues.app_bancario_teste.ui.components.ButtonPrimary
 import br.com.brunorodrigues.app_bancario_teste.ui.components.TextFieldModule
@@ -32,7 +33,7 @@ import br.com.brunorodrigues.app_bancario_teste.ui.theme.interFontFamily
 import br.com.brunorodrigues.app_bancario_teste.ui.theme.white
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
@@ -103,7 +104,9 @@ fun LoginScreen() {
                     fontWeight = FontWeight.Bold,
                     color = white
                 ),
-            ) { }
+            ) {
+                viewModel.getUser()
+            }
         }
     }
 }
