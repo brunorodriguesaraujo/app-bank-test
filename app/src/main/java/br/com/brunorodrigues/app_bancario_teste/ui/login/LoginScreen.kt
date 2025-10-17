@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,20 +29,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import br.com.brunorodrigues.app_bancario_teste.R
+import br.com.brunorodrigues.app_bancario_teste.domain.entity.User
 import br.com.brunorodrigues.app_bancario_teste.ui.components.ButtonPrimary
 import br.com.brunorodrigues.app_bancario_teste.ui.components.ErrorDialog
 import br.com.brunorodrigues.app_bancario_teste.ui.components.TextFieldModule
-import br.com.brunorodrigues.app_bancario_teste.ui.extension.isValidEmail
-import br.com.brunorodrigues.app_bancario_teste.ui.extension.isValidPassword
-import br.com.brunorodrigues.app_bancario_teste.ui.theme.gray
+import br.com.brunorodrigues.app_bancario_teste.ui.extensions.isValidEmail
+import br.com.brunorodrigues.app_bancario_teste.ui.extensions.isValidPassword
 import br.com.brunorodrigues.app_bancario_teste.ui.theme.interFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
+    onNavigateToPaymentsDetails: (user: User) -> Unit
+) {
 
     var isLoading = false
     val state by viewModel.state.collectAsState()
@@ -54,11 +57,16 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
 
     when (state) {
         is UserState.Loading -> isLoading = true
-        is UserState.Success -> {}
+        is UserState.Success -> {
+            onNavigateToPaymentsDetails((state as UserState.Success).data)
+            viewModel.clearState()
+            email = ""
+            password = ""
+        }
         is UserState.Error -> {
             ErrorDialog(
                 message = stringResource(R.string.try_later),
-                onDismiss = { viewModel.clearError() }
+                onDismiss = { viewModel.clearState() }
             )
         }
 
@@ -76,11 +84,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
         ) {
             Text(
                 text = stringResource(R.string.login),
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(top = 8.dp)
             )
             Image(
@@ -101,11 +105,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                     .clip(RoundedCornerShape(8.dp)),
                 value = email,
                 placeholder = stringResource(R.string.email),
-                textStyle = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.W400,
-                    color = gray
-                ),
+                textStyle = MaterialTheme.typography.titleMedium,
                 isError = isErrorEmail,
                 errorMessage = stringResource(R.string.email_invalid),
                 onValueChange = {
@@ -121,10 +121,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                     .clip(RoundedCornerShape(8.dp)),
                 placeholder = stringResource(R.string.password),
                 value = password,
-                textStyle = TextStyle(
-                    fontFamily = interFontFamily,
-                    color = gray
-                ),
+                textStyle = MaterialTheme.typography.titleMedium,
                 isError = isErrorPassword,
                 errorMessage = stringResource(R.string.password_error_description),
                 onValueChange = {

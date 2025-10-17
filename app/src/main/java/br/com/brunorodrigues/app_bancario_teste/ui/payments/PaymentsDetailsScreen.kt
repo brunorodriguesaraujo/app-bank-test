@@ -1,16 +1,21 @@
 package br.com.brunorodrigues.app_bancario_teste.ui.payments
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,90 +26,99 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import br.com.brunorodrigues.app_bancario_teste.R
+import br.com.brunorodrigues.app_bancario_teste.domain.entity.Payment
+import br.com.brunorodrigues.app_bancario_teste.domain.entity.User
 import br.com.brunorodrigues.app_bancario_teste.ui.components.AppBarModule
+import br.com.brunorodrigues.app_bancario_teste.ui.components.ErrorDialog
+import br.com.brunorodrigues.app_bancario_teste.ui.extensions.toBrazilianCurrency
 import br.com.brunorodrigues.app_bancario_teste.ui.theme.AppbancariotesteTheme
 import br.com.brunorodrigues.app_bancario_teste.ui.theme.interFontFamily
-import br.com.brunorodrigues.app_bancario_teste.ui.theme.steelBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentDetailsScreen(viewModel: PaymentsDetailsViewModel = hiltViewModel()) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column(modifier = Modifier.padding(paddingValues = innerPadding)) {
-            AppBarModule(
-                title = stringResource(R.string.payments),
-                textStyle = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            ) {
+fun PaymentDetailsScreen(
+    viewModel: PaymentsDetailsViewModel = hiltViewModel(),
+    user: User?,
+    onNavigateBack: () -> Unit
+) {
 
+    val state by viewModel.state.collectAsState()
+    val payments = (state as? PaymentsState.Success)?.data.orEmpty()
+    val isLoading: Boolean = state is PaymentsState.Loading
+
+    if (state is PaymentsState.Error) {
+        ErrorDialog(
+            message = stringResource(R.string.try_later),
+            onDismiss = onNavigateBack
+        )
+    }
+
+    if (isLoading) Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+    else Column {
+        AppBarModule(
+            title = stringResource(R.string.payments),
+            textStyle = MaterialTheme.typography.titleLarge,
+            onClickBackButton = onNavigateBack
+        )
+
+        Text(
+            text = stringResource(R.string.payments_details),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(16.dp)
+        )
+
+        Text(
+            text = stringResource(R.string.name, user?.customerName ?: ""),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp)
+        )
+
+        Text(
+            text = stringResource(
+                R.string.branch_account_number,
+                user?.branchNumber ?: "",
+                user?.accountNumber ?: ""
+            ),
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+        )
+
+        Text(
+            text = stringResource(
+                R.string.balance,
+                user?.checkingAccountBalance?.toBrazilianCurrency() ?: ""
+            ),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(top = 24.dp, start = 16.dp)
+        )
+
+        Text(
+            text = stringResource(R.string.bills_paid),
+            style = TextStyle(
+                fontFamily = interFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            ),
+            modifier = Modifier.padding(top = 30.dp, start = 16.dp)
+        )
+        LazyColumn {
+            items(payments) {
+                ListItemsBillsPaid(it)
             }
-
-            Text(
-                text = "Detalhes do pagamento",
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp
-                ),
-                modifier = Modifier.padding(16.dp)
-            )
-
-            Text(
-                text = "Cliente: Maria Silva",
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
-                ),
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp)
-            )
-
-            Text(
-                text = "Agência: 1234 | Conta: 56789-0",
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontSize = 14.sp,
-                    color = steelBlue
-                ),
-                modifier = Modifier.padding(top = 4.dp, start = 16.dp)
-            )
-
-            Text(
-                text = "Saldo: R$ 1.500,00",
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp
-                ),
-                modifier = Modifier.padding(top = 24.dp, start = 16.dp)
-            )
-
-            Text(
-                text = stringResource(R.string.bills_paid),
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp
-                ),
-                modifier = Modifier.padding(top = 30.dp, start = 16.dp)
-            )
-            LazyColumn {
-                items(3) {
-                    ListItemsBillsPaid()
-                }
-            }
-
         }
+
     }
 
 }
 
 @Composable
-fun ListItemsBillsPaid() {
-    Column(modifier = Modifier.padding(16.dp)) {
+fun ListItemsBillsPaid(payment: Payment) {
+    Column(modifier = Modifier.padding(top = 16.dp, end = 16.dp, start = 16.dp, bottom = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -112,33 +126,19 @@ fun ListItemsBillsPaid() {
         ) {
             Column {
                 Text(
-                    text = "Conta de luz",
-                    style = TextStyle(
-                        fontFamily = interFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp
-                    ),
+                    text = stringResource(R.string.electricity_bill),
+                    style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = "R$ 120,00",
-                    style = TextStyle(
-                        fontFamily = interFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = steelBlue
-                    ),
+                    text = payment.electricityBill,
+                    style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
             Text(
-                text = "15/07/2025",
-                style = TextStyle(
-                    fontFamily = interFontFamily,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = steelBlue,
-                ),
+                text = payment.paymentDate,
+                style = MaterialTheme.typography.labelSmall,
             )
         }
     }
@@ -148,6 +148,6 @@ fun ListItemsBillsPaid() {
 @Composable
 private fun PaymentDetailsScreenPreview() {
     AppbancariotesteTheme {
-        PaymentDetailsScreen()
+        PaymentDetailsScreen(user = null, onNavigateBack = {})
     }
 }

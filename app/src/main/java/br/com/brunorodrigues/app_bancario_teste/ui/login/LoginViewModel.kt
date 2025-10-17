@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(val repository: UserRepository): ViewMo
         }
     }
 
-    fun clearError() {
+    fun clearState() {
         _state.value = UserState.Idle
     }
 
