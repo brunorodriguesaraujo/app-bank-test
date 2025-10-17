@@ -1,6 +1,7 @@
 # App Bancário Teste
     Aplicativo de exemplo feito em Kotlin com Jetpack Compose, seguindo o padrão MVVM.
-    O app realiza login de usuário e navegação entre telas, com persistência de dados local via DataStore e testes unitários.
+    O app realiza login de usuário e navegação entre telas, com persistência de dados local via DataStore e 
+    testes unitários.
 
  ## 🛠️ Tecnologias Utilizadas
     Kotlin
