@@ -37,6 +37,7 @@ class PaymentsDetailsViewModelTest {
 
     @Test
     fun `should emit Success state when repository returns data`() = runTest {
+        // Arrange
         val mockData = listOf(
             Payment(
                 id = "Teste",
@@ -44,25 +45,27 @@ class PaymentsDetailsViewModelTest {
                 paymentDate = "10/02/2025"
             )
         )
-
         coEvery { repository.getPayments() } returns ServiceResult.Success(mockData)
 
+        // Act
         viewModel = PaymentsDetailsViewModel(repository)
 
+        // Assert
         val state = viewModel.state.value
-
         assertTrue(state is PaymentsState.Success)
         assertEquals(mockData, state.data)
     }
 
     @Test
     fun `should emit Error state when repository returns error`() = runTest {
+        // Arrange
         coEvery { repository.getPayments() } returns ServiceResult.Error(message = "Error")
 
+        // Act
         viewModel = PaymentsDetailsViewModel(repository)
 
+        // Assert
         val state = viewModel.state.value
-
         assertEquals("Error", (state as PaymentsState.Error).message)
     }
 

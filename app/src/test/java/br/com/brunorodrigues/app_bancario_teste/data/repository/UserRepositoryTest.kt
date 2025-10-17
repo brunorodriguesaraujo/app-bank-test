@@ -27,6 +27,7 @@ class UserRepositoryTest {
 
     @Test
     fun `should emit Success when api returns data`() = runTest {
+        // Arrange
         val mockUsers = listOf(UserResponse(
             customerName = "Teste",
             accountNumber = "100",
@@ -34,21 +35,25 @@ class UserRepositoryTest {
             checkingAccountBalance = 12.0,
             id = "1"
         ))
-
         coEvery { apiService.getUser() } returns retrofit2.Response.success(mockUsers)
 
+        // Act
         val result = repository.getUser()
 
+        // Assert
         assertTrue(result is ServiceResult.Success)
         assertEquals(mockUsers.first().toDomain(), (result as ServiceResult.Success).data)
     }
 
     @Test
     fun `should emit Error when api returns error`() = runTest {
+        // Arrange
         coEvery { apiService.getUser() } throws RuntimeException("fail")
 
+        // Act
         val result = repository.getUser()
 
+        // Assert
         assertTrue(result is ServiceResult.Error)
         assertEquals("fail", (result as ServiceResult.Error).message)
     }

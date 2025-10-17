@@ -27,28 +27,32 @@ class PaymentsRepositoryTest {
 
     @Test
     fun `should emit Success when api returns data`() = runTest {
+        // Arrange
         val mockPayments = listOf(PaymentsResponse(
             id = "Teste",
             electricityBill = "100",
             paymentDate = "10/02/2025"
         ))
-
         val expectedPayments = mockPayments.map { it.toDomain() }
-
         coEvery { apiService.getPayments() } returns retrofit2.Response.success(mockPayments)
 
+        // Act
         val result = repository.getPayments()
 
+        // Assert
         assertTrue(result is ServiceResult.Success)
         assertEquals(expectedPayments, (result as ServiceResult.Success).data)
     }
 
     @Test
     fun `should emit Error when api returns error`() = runTest {
+        // Arrange
         coEvery { apiService.getPayments() } throws RuntimeException("fail")
 
+        // Act
         val result = repository.getPayments()
 
+        // Assert
         assertTrue(result is ServiceResult.Error)
         assertEquals("fail", (result as ServiceResult.Error).message)
     }
