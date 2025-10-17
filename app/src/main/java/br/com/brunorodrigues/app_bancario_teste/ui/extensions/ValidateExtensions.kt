@@ -1,4 +1,4 @@
-package br.com.brunorodrigues.app_bancario_teste.ui.extension
+package br.com.brunorodrigues.app_bancario_teste.ui.extensions
 
 fun String.isValidEmail() = this.contains("@")
 
