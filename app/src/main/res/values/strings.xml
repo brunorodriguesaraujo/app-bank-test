@@ -7,4 +7,9 @@
     <string name="payments">Pagamentos</string>
     <string name="back_button">botao_voltar</string>
     <string name="bills_paid">Contas pagas</string>
+    <string name="email_invalid">Email inválido.</string>
+    <string name="password_error_description">Senha precisa conter: 6 dígitos ou mais, 1 letra, 1 número.</string>
+    <string name="try_later">Tente novamente mais tarde</string>
+    <string name="service_unavailable">Serviço Indisponível</string>
+    <string name="closed">Fechar</string>
 </resources>
