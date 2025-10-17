@@ -6,7 +6,6 @@ import br.com.brunorodrigues.app_bancario_teste.data.util.ServiceResult
 import br.com.brunorodrigues.app_bancario_teste.domain.entity.Payment
 import br.com.brunorodrigues.app_bancario_teste.domain.repository.PaymentsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +22,7 @@ class PaymentsDetailsViewModel @Inject constructor(val repository: PaymentsRepos
     }
 
     private fun getPayments() {
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             val result = repository.getPayments()
 
             when (result) {

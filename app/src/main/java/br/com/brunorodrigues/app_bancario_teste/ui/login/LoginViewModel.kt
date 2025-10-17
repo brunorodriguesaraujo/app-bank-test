@@ -6,7 +6,6 @@ import br.com.brunorodrigues.app_bancario_teste.data.util.ServiceResult
 import br.com.brunorodrigues.app_bancario_teste.domain.entity.User
 import br.com.brunorodrigues.app_bancario_teste.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ class LoginViewModel @Inject constructor(val repository: UserRepository): ViewMo
     val state = _state.asStateFlow()
 
     fun getUser() {
-        viewModelScope.launch(context = Dispatchers.IO) {
+        viewModelScope.launch {
             _state.value = UserState.Loading
             val result = repository.getUser()
 
