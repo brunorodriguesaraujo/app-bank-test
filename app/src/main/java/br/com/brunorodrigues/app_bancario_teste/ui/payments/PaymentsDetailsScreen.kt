@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import br.com.brunorodrigues.app_bancario_teste.R
 import br.com.brunorodrigues.app_bancario_teste.ui.components.AppBarModule
 import br.com.brunorodrigues.app_bancario_teste.ui.theme.AppbancariotesteTheme
@@ -28,7 +28,7 @@ import br.com.brunorodrigues.app_bancario_teste.ui.theme.steelBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentDetailsScreen() {
+fun PaymentDetailsScreen(viewModel: PaymentsDetailsViewModel = hiltViewModel()) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(modifier = Modifier.padding(paddingValues = innerPadding)) {
             AppBarModule(
