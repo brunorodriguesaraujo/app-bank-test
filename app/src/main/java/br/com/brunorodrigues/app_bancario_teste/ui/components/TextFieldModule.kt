@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import br.com.brunorodrigues.app_bancario_teste.ui.theme.black
 
 @Composable
 fun TextFieldModule(
@@ -24,6 +25,7 @@ fun TextFieldModule(
         TextField(
             value = value,
             onValueChange = onValueChange,
+            textStyle = textStyle.copy(color = black),
             placeholder = {
                 Text(text = placeholder, style = textStyle)
             },
@@ -38,6 +40,7 @@ fun TextFieldModule(
         if (isError) {
             Text(
                 text = errorMessage,
+                style = textStyle,
                 color = MaterialTheme.colorScheme.error
             )
         }
