@@ -13,7 +13,7 @@ class UserRepositoryImpl @Inject constructor(val service: ApiService) : UserRepo
             val response = service.getUser()
             if (response.isSuccessful) {
                 ServiceResult.Success(
-                    response.body()!!.toDomain()
+                    response.body()!!.first().toDomain()
                 )
             } else ServiceResult.Error(message = response.message())
         } catch (e: Exception) {

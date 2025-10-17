@@ -6,7 +6,7 @@ import br.com.brunorodrigues.app_bancario_teste.domain.entity.User
 fun UserResponse.toDomain() = User(
     customerName = customerName,
     accountNumber = accountNumber,
-    branchName = branchName,
+    branchNumber = branchNumber,
     checkingAccountBalance = checkingAccountBalance,
     id = id
 )

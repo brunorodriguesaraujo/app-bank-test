@@ -8,8 +8,8 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("/treinamento/Login")
-    suspend fun getUser() : Response<UserResponse>
+    suspend fun getUser() : Response<List<UserResponse>>
 
     @GET("/treinamento/payments")
-    suspend fun getPayments() : Response<PaymentsResponse>
+    suspend fun getPayments() : Response<List<PaymentsResponse>>
 }
